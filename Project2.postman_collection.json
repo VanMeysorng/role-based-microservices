@@ -1,0 +1,281 @@
+{
+  "info": {
+    "name": "Project 2 - Role-Based Microservices on EC2",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Task 5.1 - Add New Record",
+      "item": [
+        {
+          "name": "5.1a Register Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gateway}}/register/userregister",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin Meysorng\",\n  \"email\": \"admin.meysorng@gmail.com\",\n  \"password\": \"Admin@123\",\n  \"role\": \"admin\",\n  \"phone\": \"012345678\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "5.1b Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gateway}}/register/userregister",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"User Meysorng\",\n  \"email\": \"user.meysorng@gmail.com\",\n  \"password\": \"User@123\",\n  \"role\": \"user\",\n  \"phone\": \"098765432\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Task 5.2 - Duplicate Email",
+      "item": [
+        {
+          "name": "5.2 Register same email again (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gateway}}/register/userregister",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"User Meysorng\",\n  \"email\": \"user.meysorng@gmail.com\",\n  \"password\": \"User@123\",\n  \"role\": \"user\",\n  \"phone\": \"098765432\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Task 6 - Login + JWT",
+      "item": [
+        {
+          "name": "6.1 Login as Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gateway}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin.meysorng@gmail.com\",\n  \"password\": \"Admin@123\",\n  \"role\": \"admin\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.token) pm.collectionVariables.set('adminToken', j.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "6.2 Login as User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gateway}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user.meysorng@gmail.com\",\n  \"password\": \"User@123\",\n  \"role\": \"user\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.token) pm.collectionVariables.set('userToken', j.token);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Task 7 - Correct Role (200)",
+      "item": [
+        {
+          "name": "7.1 Admin JWT -> viewalluser",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{gateway}}/admin/viewalluser",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "7.2 User JWT -> updateprofile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gateway}}/user/updateprofile",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"User Meysorng Updated\",\n  \"phone\": \"099999999\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Task 8 - Wrong Role (403)",
+      "item": [
+        {
+          "name": "8.1 Admin JWT -> updateprofile (403)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gateway}}/user/updateprofile",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Should Fail\",\n  \"phone\": \"000\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "8.2 User JWT -> viewalluser (403)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{gateway}}/admin/viewalluser",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "gateway",
+      "value": "http://EC2_1_PUBLIC_IP:5000"
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "userToken",
+      "value": ""
+    }
+  ]
+}

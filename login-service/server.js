@@ -51,5 +51,7 @@ app.post('/auth/login', async (req, res) => {
   }
 });
 
+app.get('/', (req, res) => res.json({ success: true, service: 'Login Service', port: Number(process.env.PORT || 5002) }));
+
 const PORT = process.env.PORT || 5002;
-app.listen(PORT, () => console.log(`Login Service running on port ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`Login Service running on port ${PORT}`));

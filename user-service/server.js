@@ -41,5 +41,7 @@ const updateProfileHandler = async (req, res) => {
 app.put('/user/updateprofile', updateProfileHandler);
 app.put('/updateprofile', updateProfileHandler);
 
+app.get('/', (req, res) => res.json({ success: true, service: 'User Service', port: Number(process.env.PORT || 5004) }));
+
 const PORT = process.env.PORT || 5004;
-app.listen(PORT, () => console.log(`User Service running on port ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`User Service running on port ${PORT}`));

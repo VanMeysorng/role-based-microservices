@@ -42,5 +42,7 @@ const registerHandler = async (req, res) => {
 app.post('/register/userregister', registerHandler);
 app.post('/userregister', registerHandler);
 
+app.get('/', (req, res) => res.json({ success: true, service: 'Registration Service', port: Number(process.env.PORT || 5001) }));
+
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => console.log(`Registration Service running on port ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`Registration Service running on port ${PORT}`));
