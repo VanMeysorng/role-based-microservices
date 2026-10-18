@@ -76,6 +76,9 @@ esac
 
 echo "=== [5/5] Status ==="
 pm2 save >/dev/null
+# auto-start services again after the sandbox/lab stops and restarts the instance
+sudo env PATH="$PATH" pm2 startup systemd -u "$USER" --hp "$HOME" >/dev/null 2>&1 || true
+pm2 save >/dev/null
 pm2 list
 PUBLIC_IP=$(curl -s --max-time 3 https://checkip.amazonaws.com || echo "<public-ip>")
 echo "Done. Test in browser: http://$PUBLIC_IP:$( [[ $ROLE == 1 ]] && echo 5000 || ([[ $ROLE == 2 ]] && echo 5003 || echo 5004) )/"

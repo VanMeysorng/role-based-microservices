@@ -12,8 +12,8 @@ const app = express();
 // EC2 #3 : User Microservice  (5004)
 // Replace the IPs below with your EC2 PUBLIC IPs, commit and push.
 const EC2_1_IP = process.env.EC2_1_IP || '127.0.0.1';                      // gateway box itself
-const EC2_2_IP = process.env.EC2_2_IP || 'REPLACE_WITH_EC2_2_PUBLIC_IP';   // admin-service
-const EC2_3_IP = process.env.EC2_3_IP || 'REPLACE_WITH_EC2_3_PUBLIC_IP';   // user-service
+const EC2_2_IP = process.env.EC2_2_IP || '54.221.34.81' ;   // admin-service
+const EC2_3_IP = process.env.EC2_3_IP || '3.94.133.230' ;   // user-service
 
 const REGISTER_SERVICE_URL = process.env.REGISTER_SERVICE_URL || `http://${EC2_1_IP}:5001`;
 const LOGIN_SERVICE_URL    = process.env.LOGIN_SERVICE_URL    || `http://${EC2_1_IP}:5002`;
